@@ -1,5 +1,5 @@
 
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -55,7 +55,7 @@
       position: relative;
       height: 2px;
       background: linear-gradient(90deg, transparent, #eab308, transparent);
-      margin: 2.5rem 0;
+      margin: 2rem 0;
     }
     .section-divider::after {
       content: '✨';
@@ -66,6 +66,11 @@
       background: #0b132b;
       padding: 0 10px;
       font-size: 14px;
+    }
+    /* Quebra suave de textos longos para não estourar o layout */
+    .break-word-custom {
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
     /* Estilização de scrollbar */
     ::-webkit-scrollbar {
@@ -80,69 +85,84 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-12 antialiased">
 
-  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+  <div class="max-w-4xl mx-auto px-3 sm:px-6">
 
     <!-- 1. TOPO & CABEÇALHO -->
-    <header class="pt-6 pb-2 text-center">
+    <header class="pt-4 sm:pt-6 pb-2 text-center">
       <!-- Imagem do Local -->
-      <div class="relative group rounded-2xl overflow-hidden shadow-2xl border border-gold-600/30 mb-6 bg-slate-800">
+      <div class="relative group rounded-2xl overflow-hidden shadow-2xl border border-gold-600/30 mb-4 sm:mb-6 bg-slate-800">
         <img id="venue-image" src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1200&q=80" 
              alt="Local do Evento Réveillon" 
-             class="w-full h-56 sm:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+             class="w-full h-48 sm:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
              onerror="this.src='https://placehold.co/1200x500/1e293b/eab308?text=Local+do+Evento+Réveillon'" />
         
         <button onclick="openEditImageModal()" 
-                class="absolute top-3 right-3 bg-slate-900/80 hover:bg-gold-600 text-white p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg border border-gold-500/50"
+                class="absolute top-3 right-3 bg-slate-900/80 hover:bg-gold-600 text-white p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg border border-gold-500/50 active:scale-95"
                 title="Alterar Imagem do Local">
           <i class="fas fa-camera"></i>
         </button>
 
-        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-0,8 sm:p-7 text-left">
-          <h1 class="text-3xl sm:text-4xl font-extrabold font-serif gold-gradient-text tracking-wide drop-shadow-md">
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-3 sm:p-6 text-left">
+          <h1 class="text-2xl sm:text-4xl font-extrabold font-serif gold-gradient-text tracking-wide drop-shadow-md">
             🍾 Réveillon 2025 / 2026 🥂
           </h1>
         </div>
       </div>
 
       <!-- Localização do Evento -->
-      <div class="bg-slate-800/80 border border-gold-600/30 rounded-xl p-4 mb-6 shadow-lg backdrop-blur-sm relative">
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-xs font-semibold text-gold-400 uppercase tracking-widest flex items-center gap-1.5">
+      <div class="bg-slate-800/90 border border-gold-600/30 rounded-xl p-3.5 sm:p-4 mb-4 sm:mb-6 shadow-lg backdrop-blur-sm relative">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] sm:text-xs font-semibold text-gold-400 uppercase tracking-widest flex items-center gap-1.5">
             <i class="fas fa-map-marker-alt"></i> Localização do Evento
           </span>
-          <button onclick="toggleEditLocation()" class="text-slate-400 hover:text-gold-400 text-xs flex items-center gap-1 transition">
+          <button onclick="toggleEditLocation()" class="text-slate-400 hover:text-gold-400 text-xs flex items-center gap-1 transition p-1">
             <i class="fas fa-edit"></i> <span id="edit-loc-text">Editar</span>
           </button>
         </div>
         
-        <!-- Display Localização -->
-        <div id="location-display" class="text-lg sm:text-xl font-medium text-slate-100 flex items-center gap-2">
-          <span id="location-text">Chácara Recanto Ouro Verde - Rua das Palmeiras, 1000</span>
+        <!-- Display Localização e Botão Maps -->
+        <div id="location-display" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
+          <span id="location-text" class="text-base sm:text-xl font-medium text-slate-100 break-word-custom leading-snug">Chácara Recanto Ouro Verde - Rua das Palmeiras, 1000</span>
+          
+          <a id="btn-google-maps" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" 
+             class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-lg shadow-md hover:shadow-indigo-500/20 border border-blue-400/30 transition-all active:scale-95 shrink-0">
+            <i class="fas fa-map-marked-alt text-amber-300"></i>
+            <span>Abrir no Google Maps</span>
+          </a>
         </div>
 
         <!-- Form Edit Localização (Hidden) -->
-        <div id="location-edit-form" class="hidden mt-2 flex flex-col sm:flex-row gap-2">
-          <input type="text" id="location-input" class="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-500" placeholder="Digite o endereço completo do local...">
-          <button onclick="saveLocation()" class="bg-gold-600 hover:bg-gold-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm transition">Salvar</button>
+        <div id="location-edit-form" class="hidden mt-3 pt-3 border-t border-slate-700/60 flex flex-col gap-2">
+          <div>
+            <label class="block text-left text-xs text-slate-400 mb-1">Endereço/Descrição do Local:</label>
+            <input type="text" id="location-input" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-500" placeholder="Digite o endereço completo...">
+          </div>
+          <div>
+            <label class="block text-left text-xs text-slate-400 mb-1">Link do Google Maps (URL):</label>
+            <input type="url" id="maps-url-input" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-500" placeholder="https://maps.app.goo.gl/...">
+          </div>
+          <div class="flex justify-end gap-2 mt-1">
+            <button onclick="saveLocation()" class="bg-gold-600 hover:bg-gold-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm transition">Salvar Localização</button>
+          </div>
         </div>
       </div>
 
       <!-- Resumos: Total de Participantes e Aluguel -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         
         <!-- Card: Número de Participantes -->
         <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-gold-600/30 rounded-xl p-4 shadow-xl flex items-center justify-between">
           <div class="text-left">
-            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total de Participantes</p>
-            <h3 id="total-participants-count" class="text-3xl font-extrabold text-white mt-1">0</h3>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">Total de Participantes</p>
+            <h3 id="total-participants-count" class="text-2xl sm:text-3xl font-extrabold text-white mt-0.5">0</h3>
             <p class="text-xs text-slate-400 mt-1">
-              <span id="adults-count-badge" class="text-gold-400">0 Adultos</span> • 
-              <span id="kids-count-badge" class="text-emerald-400">0 Crianças</span>
+              <span id="adults-count-badge" class="text-gold-400 font-medium">0 Adultos</span> • 
+              <span id="kids-count-badge" class="text-emerald-400 font-medium">0 Crianças</span>
             </p>
           </div>
-          <div class="w-12 h-12 bg-gold-500/10 rounded-full flex items-center justify-center border border-gold-500/30 text-gold-400 text-xl">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 bg-gold-500/10 rounded-full flex items-center justify-center border border-gold-500/30 text-gold-400 text-lg sm:text-xl shrink-0">
             <i class="fas fa-users"></i>
           </div>
         </div>
@@ -151,15 +171,15 @@
         <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-gold-600/30 rounded-xl p-4 shadow-xl flex items-center justify-between relative">
           <div class="text-left">
             <div class="flex items-center gap-2">
-              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Aluguel do Espaço</p>
-              <button onclick="openEditRentModal()" class="text-slate-400 hover:text-gold-400 text-xs">
+              <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider">Aluguel do Espaço</p>
+              <button onclick="openEditRentModal()" class="text-slate-400 hover:text-gold-400 text-xs p-1" title="Editar Valor">
                 <i class="fas fa-pen"></i>
               </button>
             </div>
-            <h3 id="rent-total-display" class="text-3xl font-extrabold text-gold-400 mt-1">R$ 0,00</h3>
-            <p id="rent-per-adult" class="text-xs text-slate-300 mt-1">R$ 0,00 por adulto</p>
+            <h3 id="rent-total-display" class="text-2xl sm:text-3xl font-extrabold text-gold-400 mt-0.5">R$ 0,00</h3>
+            <p id="rent-per-adult" class="text-xs text-slate-300 mt-1 font-medium">R$ 0,00 por adulto</p>
           </div>
-          <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/30 text-emerald-400 text-xl">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/30 text-emerald-400 text-lg sm:text-xl shrink-0">
             <i class="fas fa-home"></i>
           </div>
         </div>
@@ -172,14 +192,14 @@
 
     <!-- 2. LISTA DE CRIANÇAS -->
     <section>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold font-serif text-white flex items-center gap-2">
+      <div class="flex items-center justify-between mb-3 sm:mb-4">
+        <h2 class="text-xl sm:text-2xl font-bold font-serif text-white flex items-center gap-2">
           <i class="fas fa-child text-emerald-400"></i> Crianças
-          <span id="kids-header-count" class="text-sm font-sans bg-slate-800 border border-emerald-500/30 text-emerald-400 px-2.5 py-0.5 rounded-full">(0)</span>
+          <span id="kids-header-count" class="text-xs sm:text-sm font-sans bg-slate-800 border border-emerald-500/30 text-emerald-400 px-2.5 py-0.5 rounded-full">(0)</span>
         </h2>
       </div>
 
-      <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl overflow-hidden shadow-lg mb-4">
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl overflow-hidden shadow-lg mb-3">
         <div id="kids-list-container" class="divide-y divide-slate-700/50">
           <!-- Item Exemplo/Vazio via JS -->
         </div>
@@ -200,14 +220,14 @@
 
     <!-- 3. LISTA DE ADULTOS -->
     <section>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold font-serif text-white flex items-center gap-2">
+      <div class="flex items-center justify-between mb-3 sm:mb-4">
+        <h2 class="text-xl sm:text-2xl font-bold font-serif text-white flex items-center gap-2">
           <i class="fas fa-user-tie text-gold-400"></i> Adultos
-          <span id="adults-header-count" class="text-sm font-sans bg-slate-800 border border-gold-500/30 text-gold-400 px-2.5 py-0.5 rounded-full">(0)</span>
+          <span id="adults-header-count" class="text-xs sm:text-sm font-sans bg-slate-800 border border-gold-500/30 text-gold-400 px-2.5 py-0.5 rounded-full">(0)</span>
         </h2>
       </div>
 
-      <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl overflow-hidden shadow-lg mb-4">
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl overflow-hidden shadow-lg mb-3">
         <div id="adults-list-container" class="divide-y divide-slate-700/50">
           <!-- Lista carregada via JS -->
         </div>
@@ -228,14 +248,14 @@
 
     <!-- 4. ITENS / PRODUTOS POR ADULTO -->
     <section>
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
-        <h2 class="text-2xl font-bold font-serif text-white flex items-center gap-2">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-1">
+        <h2 class="text-xl sm:text-2xl font-bold font-serif text-white flex items-center gap-2">
           <i class="fas fa-glass-cheers text-gold-400"></i> O que cada Adulto vai Levar
         </h2>
         <span class="text-xs text-slate-400">Organização dos comes e bebes do Réveillon</span>
       </div>
 
-      <div id="adults-items-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div id="adults-items-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         <!-- Renderizado dinamicamente via JS -->
       </div>
     </section>
@@ -388,6 +408,7 @@
 
     let eventData = {
       location: 'Chácara Recanto Ouro Verde - Rua das Palmeiras, 1000',
+      mapsUrl: 'https://maps.google.com/?q=Chacara+Recanto+Ouro+Verde',
       imageUrl: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1200&q=80',
       rentValue: 1200.00,
       kids: [
@@ -413,7 +434,8 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
-          eventData = JSON.parse(saved);
+          const parsed = JSON.parse(saved);
+          eventData = { ...eventData, ...parsed };
         } catch (e) {
           console.error('Erro ao carregar dados do LocalStorage', e);
         }
@@ -435,9 +457,15 @@
 
     // Renderiza Cabeçalho e Totais
     function renderHeader() {
-      // Localização e Imagem
+      // Localização, Maps e Imagem
       document.getElementById('location-text').innerText = eventData.location;
       document.getElementById('location-input').value = eventData.location;
+      
+      const mapsBtn = document.getElementById('btn-google-maps');
+      const mapsUrl = eventData.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(eventData.location)}`;
+      mapsBtn.href = mapsUrl;
+      document.getElementById('maps-url-input').value = eventData.mapsUrl || '';
+
       document.getElementById('venue-image').src = eventData.imageUrl;
 
       // Totais
@@ -477,21 +505,21 @@
       eventData.kids.forEach(kid => {
         const genderEmoji = kid.gender === 'female' ? '👩' : '👨';
         const item = document.createElement('div');
-        item.className = 'p-3.5 sm:p-4 flex items-center justify-between hover:bg-slate-700/30 transition';
+        item.className = 'p-3 sm:p-4 flex items-center justify-between hover:bg-slate-700/30 transition gap-2';
         item.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs sm:text-sm shrink-0">
               <i class="fas fa-child"></i>
             </div>
-            <div>
-              <h4 class="font-semibold text-slate-100 text-sm sm:text-base">${genderEmoji} ${escapeHtml(kid.name)}</h4>
-              <p class="text-xs text-slate-400">
+            <div class="min-w-0">
+              <h4 class="font-semibold text-slate-100 text-sm sm:text-base break-word-custom">${genderEmoji} ${escapeHtml(kid.name)}</h4>
+              <p class="text-[11px] sm:text-xs text-slate-400 break-word-custom">
                 ${kid.age ? `${kid.age} anos` : 'Idade não descrita'} 
                 ${kid.parent ? `• Responsável: ${escapeHtml(kid.parent)}` : ''}
               </p>
             </div>
           </div>
-          <button onclick="deleteKid(${kid.id})" class="text-slate-500 hover:text-red-400 p-2 text-sm transition" title="Excluir">
+          <button onclick="deleteKid(${kid.id})" class="text-slate-500 hover:text-red-400 p-2 text-sm transition shrink-0" title="Excluir">
             <i class="fas fa-trash-alt"></i>
           </button>
         `;
@@ -516,21 +544,21 @@
       eventData.adults.forEach(adult => {
         const genderEmoji = adult.gender === 'female' ? '👩' : '👨';
         const item = document.createElement('div');
-        item.className = 'p-3.5 sm:p-4 flex items-center justify-between hover:bg-slate-700/30 transition';
+        item.className = 'p-3 sm:p-4 flex items-center justify-between hover:bg-slate-700/30 transition gap-2';
         item.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center font-bold text-sm">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center font-bold text-xs sm:text-sm shrink-0">
               <i class="fas fa-user"></i>
             </div>
-            <div>
-              <h4 class="font-semibold text-slate-100 text-sm sm:text-base">${genderEmoji} ${escapeHtml(adult.name)}</h4>
-              <p class="text-xs text-slate-400">
+            <div class="min-w-0">
+              <h4 class="font-semibold text-slate-100 text-sm sm:text-base break-word-custom">${genderEmoji} ${escapeHtml(adult.name)}</h4>
+              <p class="text-[11px] sm:text-xs text-slate-400 break-word-custom">
                 ${adult.phone ? `<i class="fab fa-whatsapp text-emerald-400"></i> ${escapeHtml(adult.phone)} • ` : ''}
-                <span class="text-gold-300">${adult.items ? adult.items.length : 0} item(ns) na lista</span>
+                <span class="text-gold-300 font-medium">${adult.items ? adult.items.length : 0} item(ns) na lista</span>
               </p>
             </div>
           </div>
-          <button onclick="deleteAdult(${adult.id})" class="text-slate-500 hover:text-red-400 p-2 text-sm transition" title="Excluir">
+          <button onclick="deleteAdult(${adult.id})" class="text-slate-500 hover:text-red-400 p-2 text-sm transition shrink-0" title="Excluir">
             <i class="fas fa-trash-alt"></i>
           </button>
         `;
@@ -545,7 +573,7 @@
 
       if (eventData.adults.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-sm">
+          <div class="col-span-full p-6 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-sm">
             Cadastre adultos acima para poder vincular os produtos do Réveillon.
           </div>
         `;
@@ -555,28 +583,28 @@
       eventData.adults.forEach(adult => {
         const genderEmoji = adult.gender === 'female' ? '👩' : '👨';
         const card = document.createElement('div');
-        card.className = 'bg-slate-800/80 border border-slate-700 rounded-xl p-4 shadow-md flex flex-col justify-between hover:border-gold-600/40 transition';
+        card.className = 'bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 sm:p-4 shadow-md flex flex-col justify-between hover:border-gold-600/40 transition';
         
         const itemsListHTML = (adult.items && adult.items.length > 0)
           ? adult.items.map(it => `
-              <li class="text-xs text-slate-300 flex items-center gap-2 bg-slate-900/60 px-2.5 py-1.5 rounded-md border border-slate-700/40">
-                <i class="fas fa-check text-emerald-400 text-[10px]"></i>
-                <span class="truncate">${escapeHtml(it)}</span>
+              <li class="text-xs text-slate-300 flex items-start gap-2 bg-slate-900/60 px-2.5 py-1.5 rounded-md border border-slate-700/40 break-word-custom">
+                <i class="fas fa-check text-emerald-400 text-[10px] mt-0.5 shrink-0"></i>
+                <span class="flex-1">${escapeHtml(it)}</span>
               </li>
             `).join('')
           : `<p class="text-xs text-slate-500 italic py-1">Nenhum item adicionado ainda.</p>`;
 
         card.innerHTML = `
           <div>
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-700/60">
-              <span class="font-bold text-slate-100 flex items-center gap-2">
+            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-700/60 gap-2">
+              <span class="font-bold text-slate-100 text-sm sm:text-base break-word-custom min-w-0">
                 <span>${genderEmoji}</span> ${escapeHtml(adult.name)}
               </span>
-              <button onclick="openManageProductsModal(${adult.id})" class="text-xs bg-slate-700 hover:bg-gold-600 hover:text-slate-950 text-slate-200 px-2.5 py-1 rounded-md transition flex items-center gap-1 font-medium">
+              <button onclick="openManageProductsModal(${adult.id})" class="text-xs bg-slate-700 hover:bg-gold-600 hover:text-slate-950 text-slate-200 px-2.5 py-1.5 rounded-md transition flex items-center gap-1 font-medium shrink-0">
                 <i class="fas fa-plus"></i> Itens
               </button>
             </div>
-            <ul class="space-y-1.5 mb-3">
+            <ul class="space-y-1.5 mb-2">
               ${itemsListHTML}
             </ul>
           </div>
@@ -601,9 +629,12 @@
     }
 
     function saveLocation() {
-      const val = document.getElementById('location-input').value.trim();
-      if (val) {
-        eventData.location = val;
+      const locVal = document.getElementById('location-input').value.trim();
+      const mapsVal = document.getElementById('maps-url-input').value.trim();
+
+      if (locVal) {
+        eventData.location = locVal;
+        eventData.mapsUrl = mapsVal || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locVal)}`;
         saveData();
         toggleEditLocation();
       }
@@ -791,4 +822,4 @@
   </script>
 </body>
 </html>
-```
+
