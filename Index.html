@@ -1,0 +1,794 @@
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizador do Réveillon 🎆</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Font Google: Montserrat & Playfair Display -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              700: '#a16207',
+            },
+            champagne: '#F7E7CE',
+            darkbg: '#0f172a',
+            cardbg: '#1e293b'
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Montserrat', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b132b;
+      color: #f8fafc;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFE082 0%, #FFB300 50%, #FF8F00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gold-border {
+      border-color: rgba(234, 179, 8, 0.4);
+    }
+    .section-divider {
+      position: relative;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #eab308, transparent);
+      margin: 2.5rem 0;
+    }
+    .section-divider::after {
+      content: '✨';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #0b132b;
+      padding: 0 10px;
+      font-size: 14px;
+    }
+    /* Estilização de scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ca8a04;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-12">
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+
+    <!-- 1. TOPO & CABEÇALHO -->
+    <header class="pt-6 pb-2 text-center">
+      <!-- Imagem do Local -->
+      <div class="relative group rounded-2xl overflow-hidden shadow-2xl border border-gold-600/30 mb-6 bg-slate-800">
+        <img id="venue-image" src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1200&q=80" 
+             alt="Local do Evento Réveillon" 
+             class="w-full h-56 sm:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+             onerror="this.src='https://placehold.co/1200x500/1e293b/eab308?text=Local+do+Evento+Réveillon'" />
+        
+        <button onclick="openEditImageModal()" 
+                class="absolute top-3 right-3 bg-slate-900/80 hover:bg-gold-600 text-white p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg border border-gold-500/50"
+                title="Alterar Imagem do Local">
+          <i class="fas fa-camera"></i>
+        </button>
+
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-0,8 sm:p-7 text-left">
+          <h1 class="text-3xl sm:text-4xl font-extrabold font-serif gold-gradient-text tracking-wide drop-shadow-md">
+            🍾 Réveillon 2025 / 2026 🥂
+          </h1>
+        </div>
+      </div>
+
+      <!-- Localização do Evento -->
+      <div class="bg-slate-800/80 border border-gold-600/30 rounded-xl p-4 mb-6 shadow-lg backdrop-blur-sm relative">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-semibold text-gold-400 uppercase tracking-widest flex items-center gap-1.5">
+            <i class="fas fa-map-marker-alt"></i> Localização do Evento
+          </span>
+          <button onclick="toggleEditLocation()" class="text-slate-400 hover:text-gold-400 text-xs flex items-center gap-1 transition">
+            <i class="fas fa-edit"></i> <span id="edit-loc-text">Editar</span>
+          </button>
+        </div>
+        
+        <!-- Display Localização -->
+        <div id="location-display" class="text-lg sm:text-xl font-medium text-slate-100 flex items-center gap-2">
+          <span id="location-text">Chácara Recanto Ouro Verde - Rua das Palmeiras, 1000</span>
+        </div>
+
+        <!-- Form Edit Localização (Hidden) -->
+        <div id="location-edit-form" class="hidden mt-2 flex flex-col sm:flex-row gap-2">
+          <input type="text" id="location-input" class="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold-500" placeholder="Digite o endereço completo do local...">
+          <button onclick="saveLocation()" class="bg-gold-600 hover:bg-gold-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm transition">Salvar</button>
+        </div>
+      </div>
+
+      <!-- Resumos: Total de Participantes e Aluguel -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Card: Número de Participantes -->
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-gold-600/30 rounded-xl p-4 shadow-xl flex items-center justify-between">
+          <div class="text-left">
+            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total de Participantes</p>
+            <h3 id="total-participants-count" class="text-3xl font-extrabold text-white mt-1">0</h3>
+            <p class="text-xs text-slate-400 mt-1">
+              <span id="adults-count-badge" class="text-gold-400">0 Adultos</span> • 
+              <span id="kids-count-badge" class="text-emerald-400">0 Crianças</span>
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-gold-500/10 rounded-full flex items-center justify-center border border-gold-500/30 text-gold-400 text-xl">
+            <i class="fas fa-users"></i>
+          </div>
+        </div>
+
+        <!-- Card: Aluguel do Espaço -->
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-gold-600/30 rounded-xl p-4 shadow-xl flex items-center justify-between relative">
+          <div class="text-left">
+            <div class="flex items-center gap-2">
+              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Aluguel do Espaço</p>
+              <button onclick="openEditRentModal()" class="text-slate-400 hover:text-gold-400 text-xs">
+                <i class="fas fa-pen"></i>
+              </button>
+            </div>
+            <h3 id="rent-total-display" class="text-3xl font-extrabold text-gold-400 mt-1">R$ 0,00</h3>
+            <p id="rent-per-adult" class="text-xs text-slate-300 mt-1">R$ 0,00 por adulto</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/30 text-emerald-400 text-xl">
+            <i class="fas fa-home"></i>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- DIVISOR 1 -->
+    <div class="section-divider"></div>
+
+    <!-- 2. LISTA DE CRIANÇAS -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold font-serif text-white flex items-center gap-2">
+          <i class="fas fa-child text-emerald-400"></i> Crianças
+          <span id="kids-header-count" class="text-sm font-sans bg-slate-800 border border-emerald-500/30 text-emerald-400 px-2.5 py-0.5 rounded-full">(0)</span>
+        </h2>
+      </div>
+
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl overflow-hidden shadow-lg mb-4">
+        <div id="kids-list-container" class="divide-y divide-slate-700/50">
+          <!-- Item Exemplo/Vazio via JS -->
+        </div>
+      </div>
+
+      <!-- BOTÃO VERDE COM SINAL DE MAIS CENTRALIZADO -->
+      <div class="flex justify-center mt-3">
+        <button onclick="openAddKidModal()" 
+                class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/40 border-2 border-emerald-400 transition-all duration-200"
+                title="Adicionar Criança">
+          <i class="fas fa-plus text-xl"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- DIVISOR 2 -->
+    <div class="section-divider"></div>
+
+    <!-- 3. LISTA DE ADULTOS -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold font-serif text-white flex items-center gap-2">
+          <i class="fas fa-user-tie text-gold-400"></i> Adultos
+          <span id="adults-header-count" class="text-sm font-sans bg-slate-800 border border-gold-500/30 text-gold-400 px-2.5 py-0.5 rounded-full">(0)</span>
+        </h2>
+      </div>
+
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl overflow-hidden shadow-lg mb-4">
+        <div id="adults-list-container" class="divide-y divide-slate-700/50">
+          <!-- Lista carregada via JS -->
+        </div>
+      </div>
+
+      <!-- BOTÃO VERDE COM SINAL DE MAIS CENTRALIZADO -->
+      <div class="flex justify-center mt-3">
+        <button onclick="openAddAdultModal()" 
+                class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/40 border-2 border-emerald-400 transition-all duration-200"
+                title="Adicionar Adulto">
+          <i class="fas fa-plus text-xl"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- DIVISOR 3 -->
+    <div class="section-divider"></div>
+
+    <!-- 4. ITENS / PRODUTOS POR ADULTO -->
+    <section>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+        <h2 class="text-2xl font-bold font-serif text-white flex items-center gap-2">
+          <i class="fas fa-glass-cheers text-gold-400"></i> O que cada Adulto vai Levar
+        </h2>
+        <span class="text-xs text-slate-400">Organização dos comes e bebes do Réveillon</span>
+      </div>
+
+      <div id="adults-items-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==================== MODAIS ==================== -->
+
+  <!-- Modal: Adicionar Criança -->
+  <div id="modal-kid" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+      <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-child text-emerald-400"></i> Cadastrar Criança
+      </h3>
+      <form id="form-add-kid" onsubmit="handleAddKid(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Nome da Criança</label>
+          <input type="text" id="kid-name" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-emerald-500 focus:outline-none" placeholder="Ex: Pedrinho">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Gênero</label>
+          <select id="kid-gender" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-emerald-500 focus:outline-none">
+            <option value="male">Homem 👨</option>
+            <option value="female">Mulher 👩</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Idade (Opcional)</label>
+          <input type="number" id="kid-age" min="0" max="17" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-emerald-500 focus:outline-none" placeholder="Ex: 8">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Responsável / Pais (Opcional)</label>
+          <input type="text" id="kid-parent" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-emerald-500 focus:outline-none" placeholder="Ex: Filho da Maria">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-kid')" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancelar</button>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-lg text-sm transition">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Adicionar Adulto -->
+  <div id="modal-adult" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+      <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-user-tie text-gold-400"></i> Cadastrar Adulto
+      </h3>
+      <form id="form-add-adult" onsubmit="handleAddAdult(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Nome Completo</label>
+          <input type="text" id="adult-name" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none" placeholder="Ex: João Silva">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Gênero</label>
+          <select id="adult-gender" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none">
+            <option value="male">Homem 👨</option>
+            <option value="female">Mulher 👩</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Telefone / WhatsApp (Opcional)</label>
+          <input type="text" id="adult-phone" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none" placeholder="Ex: (11) 99999-8888">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Produtos Iniciais (separados por vírgula)</label>
+          <input type="text" id="adult-initial-items" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none" placeholder="Ex: 1 Fardo de Cerveja, 2kg de Carne">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-adult')" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancelar</button>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-lg text-sm transition">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Adicionar/Editar Produtos de um Adulto -->
+  <div id="modal-products" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+      <h3 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
+        <i class="fas fa-shopping-bag text-gold-400"></i> Gerenciar Produtos
+      </h3>
+      <p id="modal-products-adult-name" class="text-sm text-gold-400 mb-4 font-semibold"></p>
+
+      <div class="space-y-4">
+        <div class="flex gap-2">
+          <input type="text" id="new-product-input" class="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none" placeholder="Ex: 1 Garrafa de Champagne">
+          <button onclick="addProductToCurrentAdult()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-lg text-sm transition flex items-center gap-1">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-2">Itens já cadastrados:</label>
+          <ul id="current-adult-products-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <!-- Itens inseridos dinamicamente -->
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button type="button" onclick="closeModal('modal-products')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-5 py-2 rounded-lg text-sm transition">Concluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Valor do Aluguel -->
+  <div id="modal-rent" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+      <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-money-bill-wave text-emerald-400"></i> Valor do Aluguel
+      </h3>
+      <form onsubmit="handleSaveRent(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">Valor Total do Espaço (R$)</label>
+          <input type="number" step="0.01" min="0" id="rent-input" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none" placeholder="Ex: 1500.00">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-rent')" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancelar</button>
+          <button type="submit" class="bg-gold-600 hover:bg-gold-500 text-slate-950 font-bold px-5 py-2 rounded-lg text-sm transition">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar URL da Imagem -->
+  <div id="modal-image" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+      <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-image text-gold-400"></i> Alterar Imagem do Local
+      </h3>
+      <form onsubmit="handleSaveImage(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-300 font-semibold mb-1">URL da Imagem</label>
+          <input type="url" id="image-url-input" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:border-gold-500 focus:outline-none" placeholder="https://exemplo.com/foto.jpg">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-image')" class="px-4 py-2 text-slate-400 hover:text-white text-sm">Cancelar</button>
+          <button type="submit" class="bg-gold-600 hover:bg-gold-500 text-slate-950 font-bold px-5 py-2 rounded-lg text-sm transition">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // --- ESTADO INICIAL / LOCALSTORAGE ---
+    const STORAGE_KEY = 'reveillon_event_data_v1';
+
+    let eventData = {
+      location: 'Chácara Recanto Ouro Verde - Rua das Palmeiras, 1000',
+      imageUrl: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1200&q=80',
+      rentValue: 1200.00,
+      kids: [
+        { id: 1, name: 'Lucas', gender: 'male', age: 7, parent: 'Filho do Carlos' },
+        { id: 2, name: 'Sofia', gender: 'female', age: 4, parent: 'Filha da Mariana' }
+      ],
+      adults: [
+        { id: 101, name: 'Carlos Eduardo', gender: 'male', phone: '(11) 98888-7777', items: ['2 Caixas de Cerveja', '1 Pct de Gelo', '3kg de Picanha'] },
+        { id: 102, name: 'Mariana Santos', gender: 'female', phone: '(11) 97777-6666', items: ['1 Garrafa de Espumante', 'Pratos e Talheres Descartáveis', 'Sobremesa (Pudim)'] },
+        { id: 103, name: 'Roberto Lima', gender: 'male', phone: '(11) 96666-5555', items: ['2 Refrigerantes 2L', 'Carvão 5kg', 'Farofa e Vinagrete'] }
+      ]
+    };
+
+    let activeAdultIdForProducts = null;
+
+    // --- INICIALIZAÇÃO ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStorageData();
+      renderAll();
+    });
+
+    function loadStorageData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          eventData = JSON.parse(saved);
+        } catch (e) {
+          console.error('Erro ao carregar dados do LocalStorage', e);
+        }
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(eventData));
+      renderAll();
+    }
+
+    // --- RENDERIZAÇÃO GERAL ---
+    function renderAll() {
+      renderHeader();
+      renderKids();
+      renderAdults();
+      renderProductsByAdult();
+    }
+
+    // Renderiza Cabeçalho e Totais
+    function renderHeader() {
+      // Localização e Imagem
+      document.getElementById('location-text').innerText = eventData.location;
+      document.getElementById('location-input').value = eventData.location;
+      document.getElementById('venue-image').src = eventData.imageUrl;
+
+      // Totais
+      const totalKids = eventData.kids.length;
+      const totalAdults = eventData.adults.length;
+      const totalParticipants = totalKids + totalAdults;
+
+      document.getElementById('total-participants-count').innerText = totalParticipants;
+      document.getElementById('adults-count-badge').innerText = `${totalAdults} Adulto${totalAdults !== 1 ? 's' : ''}`;
+      document.getElementById('kids-count-badge').innerText = `${totalKids} Criança${totalKids !== 1 ? 's' : ''}`;
+
+      document.getElementById('kids-header-count').innerText = `(${totalKids})`;
+      document.getElementById('adults-header-count').innerText = `(${totalAdults})`;
+
+      // Valor Aluguel
+      const rent = parseFloat(eventData.rentValue) || 0;
+      document.getElementById('rent-total-display').innerText = formatCurrency(rent);
+
+      const rentPerAdult = totalAdults > 0 ? (rent / totalAdults) : rent;
+      document.getElementById('rent-per-adult').innerText = `${formatCurrency(rentPerAdult)} por adulto`;
+    }
+
+    // Renderiza Lista de Crianças
+    function renderKids() {
+      const container = document.getElementById('kids-list-container');
+      container.innerHTML = '';
+
+      if (eventData.kids.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center text-slate-400 text-sm">
+            Nenhuma criança cadastrada na lista ainda.
+          </div>
+        `;
+        return;
+      }
+
+      eventData.kids.forEach(kid => {
+        const genderEmoji = kid.gender === 'female' ? '👩' : '👨';
+        const item = document.createElement('div');
+        item.className = 'p-3.5 sm:p-4 flex items-center justify-between hover:bg-slate-700/30 transition';
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-sm">
+              <i class="fas fa-child"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-slate-100 text-sm sm:text-base">${genderEmoji} ${escapeHtml(kid.name)}</h4>
+              <p class="text-xs text-slate-400">
+                ${kid.age ? `${kid.age} anos` : 'Idade não descrita'} 
+                ${kid.parent ? `• Responsável: ${escapeHtml(kid.parent)}` : ''}
+              </p>
+            </div>
+          </div>
+          <button onclick="deleteKid(${kid.id})" class="text-slate-500 hover:text-red-400 p-2 text-sm transition" title="Excluir">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Renderiza Lista de Adultos
+    function renderAdults() {
+      const container = document.getElementById('adults-list-container');
+      container.innerHTML = '';
+
+      if (eventData.adults.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center text-slate-400 text-sm">
+            Nenhum adulto cadastrado na lista ainda.
+          </div>
+        `;
+        return;
+      }
+
+      eventData.adults.forEach(adult => {
+        const genderEmoji = adult.gender === 'female' ? '👩' : '👨';
+        const item = document.createElement('div');
+        item.className = 'p-3.5 sm:p-4 flex items-center justify-between hover:bg-slate-700/30 transition';
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center font-bold text-sm">
+              <i class="fas fa-user"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-slate-100 text-sm sm:text-base">${genderEmoji} ${escapeHtml(adult.name)}</h4>
+              <p class="text-xs text-slate-400">
+                ${adult.phone ? `<i class="fab fa-whatsapp text-emerald-400"></i> ${escapeHtml(adult.phone)} • ` : ''}
+                <span class="text-gold-300">${adult.items ? adult.items.length : 0} item(ns) na lista</span>
+              </p>
+            </div>
+          </div>
+          <button onclick="deleteAdult(${adult.id})" class="text-slate-500 hover:text-red-400 p-2 text-sm transition" title="Excluir">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Renderiza Seção "O que cada adulto vai levar"
+    function renderProductsByAdult() {
+      const container = document.getElementById('adults-items-container');
+      container.innerHTML = '';
+
+      if (eventData.adults.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full p-8 text-center bg-slate-800/40 border border-slate-700/50 rounded-xl text-slate-400 text-sm">
+            Cadastre adultos acima para poder vincular os produtos do Réveillon.
+          </div>
+        `;
+        return;
+      }
+
+      eventData.adults.forEach(adult => {
+        const genderEmoji = adult.gender === 'female' ? '👩' : '👨';
+        const card = document.createElement('div');
+        card.className = 'bg-slate-800/80 border border-slate-700 rounded-xl p-4 shadow-md flex flex-col justify-between hover:border-gold-600/40 transition';
+        
+        const itemsListHTML = (adult.items && adult.items.length > 0)
+          ? adult.items.map(it => `
+              <li class="text-xs text-slate-300 flex items-center gap-2 bg-slate-900/60 px-2.5 py-1.5 rounded-md border border-slate-700/40">
+                <i class="fas fa-check text-emerald-400 text-[10px]"></i>
+                <span class="truncate">${escapeHtml(it)}</span>
+              </li>
+            `).join('')
+          : `<p class="text-xs text-slate-500 italic py-1">Nenhum item adicionado ainda.</p>`;
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-700/60">
+              <span class="font-bold text-slate-100 flex items-center gap-2">
+                <span>${genderEmoji}</span> ${escapeHtml(adult.name)}
+              </span>
+              <button onclick="openManageProductsModal(${adult.id})" class="text-xs bg-slate-700 hover:bg-gold-600 hover:text-slate-950 text-slate-200 px-2.5 py-1 rounded-md transition flex items-center gap-1 font-medium">
+                <i class="fas fa-plus"></i> Itens
+              </button>
+            </div>
+            <ul class="space-y-1.5 mb-3">
+              ${itemsListHTML}
+            </ul>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // --- AÇÕES & HANDLERS ---
+
+    // Alternar formulário de localização
+    function toggleEditLocation() {
+      const form = document.getElementById('location-edit-form');
+      const text = document.getElementById('edit-loc-text');
+      if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        text.innerText = 'Cancelar';
+      } else {
+        form.classList.add('hidden');
+        text.innerText = 'Editar';
+      }
+    }
+
+    function saveLocation() {
+      const val = document.getElementById('location-input').value.trim();
+      if (val) {
+        eventData.location = val;
+        saveData();
+        toggleEditLocation();
+      }
+    }
+
+    // Modal Handlers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function openAddKidModal() {
+      document.getElementById('form-add-kid').reset();
+      openModal('modal-kid');
+    }
+
+    function handleAddKid(e) {
+      e.preventDefault();
+      const name = document.getElementById('kid-name').value.trim();
+      const gender = document.getElementById('kid-gender').value;
+      const age = document.getElementById('kid-age').value;
+      const parent = document.getElementById('kid-parent').value.trim();
+
+      if (name) {
+        eventData.kids.push({
+          id: Date.now(),
+          name: name,
+          gender: gender || 'male',
+          age: age ? parseInt(age) : null,
+          parent: parent || null
+        });
+        saveData();
+        closeModal('modal-kid');
+      }
+    }
+
+    function deleteKid(id) {
+      if (confirm('Deseja remover esta criança da lista?')) {
+        eventData.kids = eventData.kids.filter(k => k.id !== id);
+        saveData();
+      }
+    }
+
+    function openAddAdultModal() {
+      document.getElementById('form-add-adult').reset();
+      openModal('modal-adult');
+    }
+
+    function handleAddAdult(e) {
+      e.preventDefault();
+      const name = document.getElementById('adult-name').value.trim();
+      const gender = document.getElementById('adult-gender').value;
+      const phone = document.getElementById('adult-phone').value.trim();
+      const itemsRaw = document.getElementById('adult-initial-items').value.trim();
+
+      const items = itemsRaw ? itemsRaw.split(',').map(i => i.trim()).filter(i => i.length > 0) : [];
+
+      if (name) {
+        eventData.adults.push({
+          id: Date.now(),
+          name: name,
+          gender: gender || 'male',
+          phone: phone || null,
+          items: items
+        });
+        saveData();
+        closeModal('modal-adult');
+      }
+    }
+
+    function deleteAdult(id) {
+      if (confirm('Deseja remover este adulto da lista?')) {
+        eventData.adults = eventData.adults.filter(a => a.id !== id);
+        saveData();
+      }
+    }
+
+    // Modal Produtos
+    function openManageProductsModal(adultId) {
+      activeAdultIdForProducts = adultId;
+      const adult = eventData.adults.find(a => a.id === adultId);
+      if (!adult) return;
+
+      document.getElementById('modal-products-adult-name').innerText = `Participante: ${adult.name}`;
+      document.getElementById('new-product-input').value = '';
+      renderModalProductsList();
+      openModal('modal-products');
+    }
+
+    function renderModalProductsList() {
+      const adult = eventData.adults.find(a => a.id === activeAdultIdForProducts);
+      const container = document.getElementById('current-adult-products-list');
+      container.innerHTML = '';
+
+      if (!adult || !adult.items || adult.items.length === 0) {
+        container.innerHTML = `<li class="text-xs text-slate-500 py-2">Sem produtos cadastrados.</li>`;
+        return;
+      }
+
+      adult.items.forEach((prod, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between bg-slate-900 px-3 py-2 rounded-lg text-xs text-slate-200 border border-slate-700/50';
+        li.innerHTML = `
+          <span>${escapeHtml(prod)}</span>
+          <button onclick="removeProductFromAdult(${index})" class="text-slate-500 hover:text-red-400 p-1">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        container.appendChild(li);
+      });
+    }
+
+    function addProductToCurrentAdult() {
+      const input = document.getElementById('new-product-input');
+      const val = input.value.trim();
+      if (!val || !activeAdultIdForProducts) return;
+
+      const adult = eventData.adults.find(a => a.id === activeAdultIdForProducts);
+      if (adult) {
+        if (!adult.items) adult.items = [];
+        adult.items.push(val);
+        input.value = '';
+        saveData();
+        renderModalProductsList();
+      }
+    }
+
+    function removeProductFromAdult(index) {
+      const adult = eventData.adults.find(a => a.id === activeAdultIdForProducts);
+      if (adult && adult.items) {
+        adult.items.splice(index, 1);
+        saveData();
+        renderModalProductsList();
+      }
+    }
+
+    // Modal Aluguel
+    function openEditRentModal() {
+      document.getElementById('rent-input').value = eventData.rentValue;
+      openModal('modal-rent');
+    }
+
+    function handleSaveRent(e) {
+      e.preventDefault();
+      const val = parseFloat(document.getElementById('rent-input').value);
+      if (!isNaN(val)) {
+        eventData.rentValue = val;
+        saveData();
+        closeModal('modal-rent');
+      }
+    }
+
+    // Modal Imagem
+    function openEditImageModal() {
+      document.getElementById('image-url-input').value = eventData.imageUrl;
+      openModal('modal-image');
+    }
+
+    function handleSaveImage(e) {
+      e.preventDefault();
+      const url = document.getElementById('image-url-input').value.trim();
+      if (url) {
+        eventData.imageUrl = url;
+        saveData();
+        closeModal('modal-image');
+      }
+    }
+
+    // Utilitários
+    function formatCurrency(val) {
+      return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
+```
