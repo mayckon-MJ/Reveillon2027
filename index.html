@@ -467,6 +467,68 @@
 
     <!-- Lista do que vai ser levado -->
     <section>
+      
+      <!-- CÓDIGO DO AVISO CORRIGIDO E ALINHADO -->
+<div id="aviso-homens-container" style="text-align: center; margin: 30px auto; width: 100%; max-width: 500px; padding: 0 15px;">
+  <h2 class="aviso-amarelo-pulsando">AVISO</h2>
+  <div class="aviso-conteudo-vermelho">
+    <p>
+      Além dos itens que já estão atribuídos na lista para levar, haverá uma taxa adicional de 
+      <strong>R$ 200,00</strong> que será <strong>dividida igualmente entre todos os homens</strong> para comprar copos e pratos descartáveis.
+    </p>
+  </div>
+</div>
+
+<style>
+  /* Título "AVISO" em Amarelo Bem Vivo e Centralizado */
+  .aviso-amarelo-pulsando {
+    color: #ffcc00 !important;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+    animation: pulsarAmarelo 1.2s infinite ease-in-out;
+  }
+
+  /* Painel abaixo com fundo vermelho visível e texto claro */
+  .aviso-conteudo-vermelho {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 20px;
+    border: 3px solid #ff1a1a;
+    border-radius: 12px;
+    background-color: rgba(180, 0, 0, 0.25);
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    animation: pulsarVermelho 1.2s infinite ease-in-out;
+  }
+
+  .aviso-conteudo-vermelho strong {
+    color: #ffdddd;
+    font-weight: bold;
+  }
+
+  /* Animações de pulso */
+  @keyframes pulsarAmarelo {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.04); opacity: 0.85; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes pulsarVermelho {
+    0% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 0, 0, 0.4); }
+    50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+    100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 0, 0, 0.4); }
+  }
+</style>
+
+     
+    </section> 
+    <section>      
       <div class="section-header">
         <h2 class="section-title">🛍️ Lista Geral de Itens</h2>
       </div>
